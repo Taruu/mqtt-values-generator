@@ -17,7 +17,7 @@ def _do_publish(client):
 
     temp_properties_dict = None
     if isinstance(message, dict):
-        temp_properties_dict = message.get('properties')
+        temp_properties_dict = message.get('c')
 
     elif isinstance(message, (tuple, list)):
         if len(message) == 5:

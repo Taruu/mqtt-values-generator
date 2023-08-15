@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "mqtt-values-generator"
+version = "0.1.0"
+description = ""
+authors = ["Taruu <taruumax@gmail.com>"]
+readme = "README.md"
+packages = [{include = "mqtt_values_generator"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+paho-mqtt = "^1.6.1"
+loguru = "^0.7.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

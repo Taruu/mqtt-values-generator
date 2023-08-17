@@ -1,0 +1,24 @@
+{
+  "SYS": {
+    "repeat_time": 10,
+    "keepalive": 50
+  },
+  "FOLDER": {
+    "FOX": {
+      "values": {
+        "muzzle": "black",
+        "tail": [
+          "black",
+          "orange",
+          "white"
+        ],
+        "values": {
+          "test": 1000
+        }
+      }
+    },
+    "DOG": {
+      "value": "ears"
+    }
+  }
+}

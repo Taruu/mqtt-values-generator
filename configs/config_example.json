@@ -19,6 +19,7 @@
     },
     "DOG": {
       "value": "ears"
-    }
+    },
+    "TEST_VALUE_END" : "TEST TEST TEST"
   }
 }

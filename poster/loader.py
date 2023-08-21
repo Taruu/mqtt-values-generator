@@ -32,6 +32,7 @@ class MessageWorker:
             file_config = json.loads(file_lines)
 
         config_paths = iter_paths(file_config)
+        # TODO add support path without 'value'
         config_paths = list(filter(lambda path: isinstance(path[1], dict), config_paths))
 
         logger.info(f"""Load config from: \t {config_file_path}""")
@@ -57,6 +58,7 @@ class MessageWorker:
                                                  or 'value' in path[1], config_paths))
 
         self.message_list: list[Message] = []
+
         for path, values in messages_list:
             temp_values: dict = values.get('values')
             if not temp_values:

@@ -3,8 +3,9 @@ import json
 import uuid
 from asyncio import AbstractEventLoop
 
-from poster.custom_types import Message
+from custom_types import Message
 from paho_local.mqtt.publish import multiple
+from loguru import logger
 
 
 def iter_paths(d):
@@ -20,7 +21,7 @@ def iter_paths(d):
 
 
 class MessageWorker:
-    def __init__(self, config_file_path: str, host="localhost", port=1883):
+    def __init__(self, config_file_path: str, host='localhost', port=1883):
         self._task_work = None
         self.task = None
         self.host = host
@@ -33,6 +34,9 @@ class MessageWorker:
         config_paths = iter_paths(file_config)
         config_paths = list(filter(lambda path: isinstance(path[1], dict), config_paths))
 
+        logger.info(f"""Load config from: \t {config_file_path}""")
+        logger.debug(f"Load {len(config_paths)} parameters")
+
         post_messages_configs = list(
             filter(
                 lambda path: len(path[0]) == 1 and path[0] == ['SYS'],
@@ -40,8 +44,11 @@ class MessageWorker:
 
         if "host" in post_messages_configs:
             self.host = post_messages_configs.get('host')
+            logger.debug(f"Set host from config: {self.host}")
+
         if 'port' in post_messages_configs:
             self.port = post_messages_configs.get('port')
+            logger.debug(f"Set port from config: {self.host}")
 
         self.repeat_time = post_messages_configs.get('repeat_time')
         self.keepalive = post_messages_configs.get('keepalive')
@@ -62,7 +69,7 @@ class MessageWorker:
             topic = "/".join(path)
             values = temp_values
             self.message_list.append(Message(topic, values))
-            print(topic, values)
+        logger.info(f"Load {len(self.message_list)} values from {config_file_path}")
 
     def get_task(self, loop: AbstractEventLoop):
         self._task_work = True
@@ -75,8 +82,9 @@ class MessageWorker:
     async def post_messages(self):
         while self._task_work:
             prepared_messages = [message.get() for message in self.message_list]
-            print(prepared_messages)
+            client_id = uuid.uuid4().__str__()
             multiple(prepared_messages,
                      hostname=self.host, port=self.port, keepalive=self.keepalive,
-                     client_id=uuid.uuid4().__str__())
+                     client_id=client_id)
+            logger.info(f"[{client_id}] Post {len(prepared_messages)} messages")
             await asyncio.sleep(self.repeat_time)

@@ -33,7 +33,6 @@ def _do_properties(message):
                 for key_value, value_data in value.items():
                     temp_properties.__setattr__(key, (str(key_value), str(value_data)))
         message.update({'properties': temp_properties})
-    print(message)
     return message
 
 

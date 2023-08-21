@@ -1,5 +1,6 @@
 import json
 import time
+import uuid
 from typing import Union
 
 
@@ -16,4 +17,4 @@ class Message:
             payload = {'read': {'value': self.value}}
 
         return {'topic': self.topic, 'payload': json.dumps({'read': payload}), 'qos': 1, 'retain': False,
-                'properties': {"User Property": {'timestamp': time.time()}}}
+                'properties': {"User Property": {'message_id': uuid.uuid1().__str__()}}}

@@ -4,7 +4,7 @@ import os.path
 
 from loguru import logger
 
-from loader import MessageWorker
+from generator.loader import MessageWorker
 from signal import SIGINT, SIGTERM
 
 parser = argparse.ArgumentParser(

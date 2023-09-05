@@ -1,6 +1,7 @@
 import argparse
 import asyncio
 import os.path
+import sys
 
 from loguru import logger
 
@@ -39,3 +40,6 @@ def run():
 
     asyncio.gather(*task_list)
     loop.run_forever()
+
+
+sys.exit(run())

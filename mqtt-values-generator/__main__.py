@@ -1,3 +1,3 @@
 import cli
-
-cli.run()
+import sys
+sys.exit(cli.run())

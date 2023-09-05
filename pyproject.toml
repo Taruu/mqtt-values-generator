@@ -19,4 +19,4 @@ requires = [
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.scripts]
-mqqt-values-generator = "mqqt_values_generator.cli:run"
+mqtt-values-generator = "mqtt_values_generator.cli:run"

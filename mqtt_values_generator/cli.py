@@ -5,7 +5,8 @@ import sys
 
 from loguru import logger
 
-import loader
+from mqtt_values_generator import loader
+
 from signal import SIGINT, SIGTERM
 
 parser = argparse.ArgumentParser(

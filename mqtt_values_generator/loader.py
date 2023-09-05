@@ -3,8 +3,8 @@ import json
 import uuid
 from asyncio import AbstractEventLoop
 
-from custom_types import Message
-from paho_local.mqtt.publish import multiple
+from mqtt_values_generator.custom_types import Message
+from mqtt_values_generator.paho_local.mqtt.publish import multiple
 from loguru import logger
 
 

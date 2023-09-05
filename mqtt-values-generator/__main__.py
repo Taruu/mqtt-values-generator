@@ -4,7 +4,7 @@ import os.path
 
 from loguru import logger
 
-from generator.loader import MessageWorker
+import loader
 from signal import SIGINT, SIGTERM
 
 parser = argparse.ArgumentParser(
@@ -20,7 +20,7 @@ logger.info(args)
 workers = []
 for file_path in args.configs:
     if os.path.exists(file_path):
-        worker = MessageWorker(file_path)
+        worker = loader.MessageWorker(file_path)
         workers.append(worker)
 
 loop = asyncio.get_event_loop()

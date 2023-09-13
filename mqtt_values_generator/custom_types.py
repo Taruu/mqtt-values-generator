@@ -3,6 +3,9 @@ import time
 import uuid
 from typing import Union
 
+value_range = r"([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?@([+-]?(?=\.\d|\d)(?:\d+)?(?:\.?\d*))(?:[Ee]([+-]?\d+))?"
+random_value_list = r"(?<=@)-?\d+(\.\d+)?(?=@)"
+
 
 class Message:
     def __init__(self, topic: str, value: Union[str, int, float, list, dict]):

@@ -43,7 +43,7 @@ class MessageWorker:
                 lambda path: len(path[0]) == 1 and path[0] == ['SYS'],
                 config_paths))[-1][-1]
 
-        if "host" in post_messages_configs:
+        if "host" in post_messages_configs:  # Получаем хостинг
             self.host = post_messages_configs.get('host')
             logger.debug(f"Set host from config: {self.host}")
 
@@ -61,9 +61,11 @@ class MessageWorker:
 
         for path, values in messages_list:
             temp_values: dict = values.get('values')
+
             if not temp_values:
                 temp_values = values.get('value')
 
+            # Фильтр от вложенных данных
             if isinstance(temp_values, dict):
                 temp_values.pop('values', None)
                 temp_values.pop('value', None)

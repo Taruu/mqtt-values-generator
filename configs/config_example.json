@@ -11,14 +11,22 @@
           "black",
           "orange",
           "white"
-        ],
-        "values": {
-          "test": 1000
-        }
+        ]
       }
     },
-    "DOG": {
-      "value": "ears"
+    "TEST_CHOOSE" : {
+      "values" : {
+        "one" : "1@2@3@4",
+        "two" : "one@two@three",
+        "three" : "1000@-1234.123@231230@0123213"
+      }
+    },
+    "TEST_RANGE" : {
+      "values" : {
+        "one" : "-100R100",
+        "two" : "1Range",
+        "three": "Test-100R100Ange"
+      }
     },
     "TEST_VALUE_END" : "TEST TEST TEST"
   }

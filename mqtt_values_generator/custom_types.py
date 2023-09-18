@@ -17,27 +17,60 @@ class ToJsonEncoder(JSONEncoder):
 
 
 class NumberGenerator:
-    """Используем в случае если нам нужно"""
+    """Random number generator class"""
 
     def __init__(self, value: str):
         self.generator = None
+        self.decimal_precision = 0
+
         range_value = re.fullmatch(range_value_regex, value)
         if range_value:
-            self.generator = self.random_range(range_value[1], range_value[2])
+            if '.' in range_value[1] and '.' in range_value[2]:
+                print(type(range_value[1]))
+                start_decimal_precision = len(range_value[1].split('.')[-1])
+
+                end_decimal_precision = len(range_value[2].split('.')[-1])
+            else:
+                start_decimal_precision = 0
+                end_decimal_precision = 0
+
+            start_value = float(range_value[1])
+            end_value = float(range_value[2])
+
+            if start_value >= end_value:
+                raise ValueError("start value must be smaller then end value")
+            if start_decimal_precision != end_decimal_precision:
+                raise ValueError(
+                    f"numbers have different precision lengths {start_decimal_precision}|{end_decimal_precision}")
+            print(range_value[1].split('.'))
+            self.decimal_precision = start_decimal_precision
+            self.generator = self.random_range(range_value[1], range_value[2], self.decimal_precision)
+
         choose_list = re.findall(choose_value_regex, value)
         if choose_list:
+            for _ in range(len(choose_list)):
+                temp_value = choose_list.pop(0)
+                try:
+                    choose_list.append(int(temp_value))
+                except ValueError:
+                    choose_list.append(float(temp_value))
             self.generator = self.random_choose(choose_list)
 
     @staticmethod
-    def random_range(start: float, end: float):
+    def random_range(start: float, end: float, decimal_precision):
+        format_value = "{:." + str(decimal_precision) + "f}"  # cringe-base python moment
         while True:
             value = random.uniform(float(start), float(end))
-            yield float("{:.4f}".format(value))
+
+            if decimal_precision:
+                yield float(format_value.format(value))
+            else:
+                yield int(format_value.format(value))
 
     @staticmethod
     def random_choose(values: list):
         while True:
-            yield float(random.choice(values))
+            yield random.choice(values)
 
     def __next__(self):
         return next(self.generator)

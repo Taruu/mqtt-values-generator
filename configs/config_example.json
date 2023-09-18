@@ -24,6 +24,7 @@
     "TEST_RANGE" : {
       "values" : {
         "one" : "-100R100",
+        "Float" : "-12.123R40.123",
         "two" : "1Range",
         "three": "Test-100R100Ange"
       }

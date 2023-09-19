@@ -54,6 +54,17 @@ class MessageWorker:
         self.repeat_time = post_messages_configs.get('repeat_time')
         self.keepalive = post_messages_configs.get('keepalive')
 
+        self.calculated: dict = post_messages_configs.get('calculated')
+        # To ideal variant dont need use this check
+        for key in self.calculated.keys():
+            intersection_count = 0
+            for key_to_check in self.calculated.keys():
+                if key in key_to_check:
+                    intersection_count += 1
+            if intersection_count > 1:
+                text = f"calculated: {key} intersect with other meanings"
+                raise ValueError(text)
+
         messages_list = list(filter(lambda path: 'values' in path[1]
                                                  or 'value' in path[1], config_paths))
 

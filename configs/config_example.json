@@ -1,7 +1,13 @@
 {
   "SYS": {
     "repeat_time": 10,
-    "keepalive": 50
+    "keepalive": 50,
+    "calculated": {
+      "value_1": "",
+      "value_2": "",
+      "value_3" : 42,
+      "value_result": "value_1 + value_2"
+    }
   },
   "FOLDER": {
     "FOX": {
@@ -14,21 +20,21 @@
         ]
       }
     },
-    "TEST_CHOOSE" : {
-      "values" : {
-        "one" : "1@2@3@4",
-        "two" : "one@two@three",
-        "three" : "1000@-1234.123@231230@0123213"
+    "TEST_CHOOSE": {
+      "values": {
+        "one": "1@2@3@4",
+        "two": "one@two@three",
+        "three": "1000@-1234.123@231230@0123213"
       }
     },
-    "TEST_RANGE" : {
-      "values" : {
-        "one" : "-100R100",
-        "Float" : "-12.123R40.123",
-        "two" : "1Range",
+    "TEST_RANGE": {
+      "values": {
+        "one": "-100R100",
+        "Float": "-12.123R40.123",
+        "two": "1Range",
         "three": "Test-100R100Ange"
       }
     },
-    "TEST_VALUE_END" : "TEST TEST TEST"
+    "TEST_VALUE_END": "TEST TEST TEST"
   }
 }

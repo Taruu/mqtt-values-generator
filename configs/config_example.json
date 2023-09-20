@@ -3,8 +3,8 @@
     "repeat_time": 10,
     "keepalive": 50,
     "calculated": {
-      "value_1": "",
-      "value_2": "",
+      "value_1": 0,
+      "value_2": 42,
       "value_3" : 42,
       "value_result": "value_1 + value_2"
     }
@@ -33,6 +33,11 @@
         "Float": "-12.123R40.123",
         "two": "1Range",
         "three": "Test-100R100Ange"
+      }
+    },
+    "TEST_CALC" : {
+      "values" : {
+        "RESULT" : "@Vvalue_result"
       }
     },
     "TEST_VALUE_END": "TEST TEST TEST"

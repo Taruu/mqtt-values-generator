@@ -102,6 +102,12 @@ class NumberGenerator:
     def __int__(self):
         return int(self.last_value)
 
+    def __str__(self):
+        if type(self.last_value) is float:
+            return str(self.__float__())
+        else:
+            return str(self.__int__())
+
     def __next__(self):
         self.last_value = next(self.generator)
         return self.last_value

@@ -37,10 +37,10 @@ class CalculateWorker:
         #         raise ValueError(text)
 
         for key, value in to_calculate.items():
-            print(key, type(value))
             if type(value) in [int, float]:
                 self.values.update({key: value})
             elif any([True if letter in value else False for letter in "R@"]):
+                print("random set", key, value)
                 self.values.update({key: NumberGenerator(value)})
                 print(self.values)
             elif any([True if letter in value else False for letter in "+-/*^"]):
@@ -55,11 +55,15 @@ class CalculateWorker:
         list_values = value.split(' ')
         eval_list = []
         for value in list_values:
-            if value in self.values or value in self.expression:
+            if (value in self.values) or (value in self.expression):
+                print(f"take {value}")
                 eval_list.append(self.get(value))
             else:
                 eval_list.append(value)
+        print(self.values)
+        print("eval_list", eval_list)
         eval_string = " ".join([str(value_to_str) for value_to_str in eval_list])
+        print(eval_string)
         return eval(eval_string)
 
     def get(self, key: str) -> Union[int, float]:

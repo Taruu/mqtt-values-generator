@@ -5,8 +5,8 @@
     "calculated": {
       "value_1": 0,
       "value_2": 42,
-      "value_3" : 42,
-      "value_result": "value_1 + value_2"
+      "value_3" : "-100R100",
+      "value_result": "value_1 + value_2 + ( value_3 * value_3 )"
     }
   },
   "FOLDER": {

@@ -48,7 +48,7 @@ class NumberGenerator:
                     f"numbers have different precision lengths {start_decimal_precision}|{end_decimal_precision}")
 
             self.decimal_precision = start_decimal_precision
-            self.generator = self.random_range(range_value[1], range_value[2], self.decimal_precision)
+            self.generator = self.random_range(range_value[1], range_value[2])
 
         # choose number
         choose_list = re.findall(choose_value_regex, value)
@@ -63,38 +63,61 @@ class NumberGenerator:
 
         # Place Calc value
         # TODO to regex
-        print("value", value)
         if value.startswith("@V"):
-            key = value.replace("@V", "")
-            self.generator = self.value(self.calculated_worker.get(key))
-            pass
+            if "|" in value:
+                keys = value.split("|")
+                self.decimal_precision = keys[0].count("0")
+                self.generator = self.get_calc_value(keys[1])
+            else:
+                key = value.replace("@V", "")
+                self.generator = self.get_calc_value(key)
 
         next(self.generator)
 
-    @staticmethod
-    def value(value):
+    def get_calc_value(self, key):
         # Code geNius moment
         while True:
-            yield value
+            value = self.calculated_worker.get(key)
+            yield self.format_value(value)
 
-    @staticmethod
-    def random_range(start: float, end: float, decimal_precision):
-        format_value = "{:." + str(decimal_precision) + "f}"  # cringe-base python moment
+    def format_value(self, value):
+        """Format precision of number"""
+        format_value = "{:." + str(
+            self.decimal_precision) + "f}"  # cringe-base python moment
+        if self.decimal_precision:
+            return float(format_value.format(value))
+        return int(format_value.format(value))
+
+    def random_range(self, start: float, end: float):
         while True:
             value = random.uniform(float(start), float(end))
-
-            if decimal_precision:
-                yield float(format_value.format(value))
-            else:
-                yield int(format_value.format(value))
+            yield self.format_value(value)
 
     @staticmethod
     def random_choose(values: list):
         while True:
             yield random.choice(values)
 
-    def get_value_type(self):
-        return self.value_type
+    @staticmethod
+    def is_number_generator(value: str):
+        if not type(value) is str:
+            return False
+        choose_list = re.findall(choose_value_regex, value)
+        range_value = re.fullmatch(range_value_regex, value)
+        if (len(choose_list) > 0) or range_value:
+            return True
+        elif value.startswith("@V"):
+            return True
+        else:
+            return False
+
+    def get_last(self) -> Union[float | int]:
+        if self.last_value is None:
+            self.__next__()
+        if type(self.last_value) is float:
+            return self.__float__()
+        else:
+            return self.__int__()
 
     def __float__(self):
         return float(self.last_value)
@@ -103,10 +126,7 @@ class NumberGenerator:
         return int(self.last_value)
 
     def __str__(self):
-        if type(self.last_value) is float:
-            return str(self.__float__())
-        else:
-            return str(self.__int__())
+        return str(self.get_last())
 
     def __next__(self):
         self.last_value = next(self.generator)
@@ -117,33 +137,19 @@ class NumberGenerator:
 
 
 # TODO move in class
-def find_paths_to_replace(data, current_path=[]):
-    paths = []
-    if isinstance(data, dict):
-        for key, value in data.items():
-            new_path = current_path + [key]
-            paths.extend(find_paths_to_replace(value, new_path))
-    elif isinstance(data, str):
-        choose_list = re.findall(choose_value_regex, data)
-        range_value = re.fullmatch(range_value_regex, data)
-        if (len(choose_list) > 0) or range_value:
-            paths.append(current_path)
-        elif data.startswith("@V"):
-            paths.append(current_path)
-
-    return paths
 
 
 class Message:
     """Сообщение для отправки"""
 
-    def __init__(self, topic: str, value: Union[str, int, float, list, dict], calculate_worker=None):
+    def __init__(self, topic: str, value: Union[str, int, float, list, dict],
+                 calculate_worker=None):
         self.topic = topic
         self.value = value
         self.calculate_worker = calculate_worker
 
         if isinstance(self.value, dict):
-            convert_to_generator = find_paths_to_replace(self.value)
+            convert_to_generator = self.find_paths_to_replace(self.value)
             for path_list in convert_to_generator:
                 iter_path = path_list
                 dict_value = self.value
@@ -153,12 +159,33 @@ class Message:
                     dict_value = dict_value[key]
 
                 key = iter_path.pop()
-                dict_value[key] = NumberGenerator(dict_value[key], calculated_worker=calculate_worker)
+                dict_value[key] = \
+                    NumberGenerator(dict_value[key],
+                                    calculated_worker=self.calculate_worker)
         else:
-            self.value = {'value': self.value}
+            if NumberGenerator.is_number_generator(self.value):
+                self.value = {'value': NumberGenerator(
+                    value,
+                    calculated_worker=self.calculate_worker)}
+            else:
+                self.value = {'value': self.value}
+
+    def find_paths_to_replace(self, data, current_path=[]):
+        paths = []
+        if isinstance(data, dict):
+            for key, value in data.items():
+                new_path = current_path + [key]
+                paths.extend(self.find_paths_to_replace(value, new_path))
+        elif isinstance(data, str):
+            if NumberGenerator.is_number_generator(data):
+                paths.append(current_path)
+
+        return paths
 
     def get(self):
 
-        return {'topic': self.topic, 'payload': json.dumps({'read': self.value}, cls=ToJsonEncoder),
+        return {'topic': self.topic,
+                'payload': json.dumps({'read': self.value}, cls=ToJsonEncoder),
                 'qos': 1, 'retain': False,
-                'properties': {"User Property": {'message_id': uuid.uuid1().__str__()}}}
+                'properties': {
+                    "User Property": {'message_id': uuid.uuid1().__str__()}}}

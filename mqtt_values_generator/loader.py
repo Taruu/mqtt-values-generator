@@ -40,10 +40,9 @@ class CalculateWorker:
             if type(value) in [int, float]:
                 self.values.update({key: value})
             elif any([True if letter in value else False for letter in "R@"]):
-                print("random set", key, value)
                 self.values.update({key: NumberGenerator(value)})
-                print(self.values)
-            elif any([True if letter in value else False for letter in "+-/*^"]):
+            elif any(
+                    [True if letter in value else False for letter in "+-/*^"]):
                 self.expression.update({key: value})
             else:
                 error_text = f"value {key} not correct"
@@ -56,21 +55,19 @@ class CalculateWorker:
         eval_list = []
         for value in list_values:
             if (value in self.values) or (value in self.expression):
-                print(f"take {value}")
                 eval_list.append(self.get(value))
             else:
                 eval_list.append(value)
-        print(self.values)
-        print("eval_list", eval_list)
-        eval_string = " ".join([str(value_to_str) for value_to_str in eval_list])
-        print(eval_string)
+
+        eval_string = " ".join(
+            [str(value_to_str) for value_to_str in eval_list])
         return eval(eval_string)
 
     def get(self, key: str) -> Union[int, float]:
         if key in self.values:
             value = self.values.get(key)
             if type(value) is NumberGenerator:
-                return value.last_value
+                return value.get_last()
             return value
         elif key in self.expression:
             return self._calc(key)
@@ -80,7 +77,7 @@ class CalculateWorker:
     def __next__(self):
         # take next random values
         for value in self.values.values():
-            if value is NumberGenerator:
+            if type(value) is NumberGenerator:
                 next(value)
 
 
@@ -98,7 +95,8 @@ class MessageWorker:
 
         config_paths = iter_paths(file_config)
         # TODO add support path without 'value'
-        config_paths = list(filter(lambda path: isinstance(path[1], dict), config_paths))
+        config_paths = list(
+            filter(lambda path: isinstance(path[1], dict), config_paths))
 
         logger.info(f"""Load config from: \t {config_file_path}""")
         logger.debug(f"Load {len(config_paths)} parameters")
@@ -123,10 +121,10 @@ class MessageWorker:
 
         if self.calculated:
             self.calculated_worker = CalculateWorker(self.calculated)
-        print(type(self.calculated_worker))
 
         messages_list = list(filter(lambda path: 'values' in path[1]
-                                                 or 'value' in path[1], config_paths))
+                                                 or 'value' in path[1],
+                                    config_paths))
 
         self.message_list: list[Message] = []
 
@@ -143,8 +141,10 @@ class MessageWorker:
 
             topic = "/".join(path)
             values = temp_values
-            self.message_list.append(Message(topic, values, calculate_worker=self.calculated_worker))
-        logger.info(f"Load {len(self.message_list)} values from {config_file_path}")
+            self.message_list.append(
+                Message(topic, values, calculate_worker=self.calculated_worker))
+        logger.info(
+            f"Load {len(self.message_list)} values from {config_file_path}")
 
     def get_task(self, loop: AbstractEventLoop):
         self._task_work = True
@@ -159,7 +159,8 @@ class MessageWorker:
             prepared_messages = [message.get() for message in self.message_list]
             client_id = uuid.uuid4().__str__()
             multiple(prepared_messages,
-                     hostname=self.host, port=self.port, keepalive=self.keepalive,
+                     hostname=self.host, port=self.port,
+                     keepalive=self.keepalive,
                      client_id=client_id)
             logger.info(f"[{client_id}] Post {len(prepared_messages)} messages")
 

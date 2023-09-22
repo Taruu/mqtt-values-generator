@@ -5,7 +5,7 @@
     "calculated": {
       "value_1": 0,
       "value_2": 42,
-      "value_3" : "-100R100",
+      "value_3": "-100.100R100.100",
       "value_result": "value_1 + value_2 + ( value_3 * value_3 )"
     }
   },
@@ -35,11 +35,15 @@
         "three": "Test-100R100Ange"
       }
     },
-    "TEST_CALC" : {
-      "values" : {
-        "RESULT" : "@Vvalue_result"
+    "TEST_CALC": {
+      "values": {
+        "RESULT": "@V00|value_result",
+        "value_1": "@Vvalue_1",
+        "value_3": "@Vvalue_3"
       }
     },
-    "TEST_VALUE_END": "TEST TEST TEST"
+    "SOLO_VALUE_TEST": {
+      "value": "42.000R42.999"
+    }
   }
 }

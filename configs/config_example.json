@@ -22,9 +22,9 @@
     },
     "TEST_CHOOSE": {
       "values": {
-        "one": "1@2@3@4",
+        "one": "1@2@3@4@",
         "two": "one@two@three",
-        "three": "1000@-1234.123@231230@0123213"
+        "three": "1000@-1234.123@231230@0123213@"
       }
     },
     "TEST_RANGE": {
@@ -39,6 +39,7 @@
       "values": {
         "RESULT": "@V00|value_result",
         "value_1": "@Vvalue_1",
+        "value_2": "@Vvalue_2",
         "value_3": "@Vvalue_3"
       }
     },

@@ -63,13 +63,13 @@ class NumberGenerator:
 
         # Place Calc value
         # TODO to regex
-        if value.startswith("@V"):
+        if value.startswith("@V="):
             if "|" in value:
                 keys = value.split("|")
                 self.decimal_precision = keys[0].count("0")
                 self.generator = self.get_calc_value(keys[1])
             else:
-                key = value.replace("@V", "")
+                key = value.replace("@V=", "")
                 self.generator = self.get_calc_value(key)
 
         next(self.generator)
@@ -106,7 +106,7 @@ class NumberGenerator:
         range_value = re.fullmatch(range_value_regex, value)
         if (len(choose_list) > 0) or range_value:
             return True
-        elif value.startswith("@V"):
+        elif value.startswith("@V="):
             return True
         else:
             return False

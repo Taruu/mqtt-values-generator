@@ -2,6 +2,7 @@
   "SYS": {
     "repeat_time": 10,
     "keepalive": 50,
+    "device_path" : ["fox", "girl"],
     "calculated": {
       "value_1": 0,
       "value_2": 42,
@@ -37,10 +38,10 @@
     },
     "TEST_CALC": {
       "values": {
-        "RESULT": "@V00|value_result",
-        "value_1": "@Vvalue_1",
-        "value_2": "@Vvalue_2",
-        "value_3": "@Vvalue_3"
+        "RESULT": "@V=00|value_result",
+        "value_1": "@V=value_1",
+        "value_2": "@V=value_2",
+        "value_3": "@V=value_3"
       }
     },
     "SOLO_VALUE_TEST": {

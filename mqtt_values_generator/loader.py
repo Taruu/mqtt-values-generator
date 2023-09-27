@@ -82,11 +82,13 @@ class CalculateWorker:
 
 
 class MessageWorker:
-    def __init__(self, config_file_path: str, host='localhost', port=1883):
+    def __init__(self, config_file_path: str, host='localhost', port=1883, ):
         self._task_work = None
         self.task = None
         self.host = host
         self.port = port
+        self.device_topic = []
+
         self.calculated_worker = CalculateWorker({})
 
         with open(config_file_path, 'r') as file:
@@ -108,11 +110,16 @@ class MessageWorker:
 
         if "host" in post_messages_configs:  # Получаем хостинг
             self.host = post_messages_configs.get('host')
-            logger.debug(f"Set host from config: {self.host}")
+            logger.info(f"Set host from config: {self.host}")
 
         if 'port' in post_messages_configs:
             self.port = post_messages_configs.get('port')
-            logger.debug(f"Set port from config: {self.host}")
+            logger.info(f"Set port from config: {self.host}")
+
+        if 'device_path' in post_messages_configs:
+            self.device_topic = post_messages_configs.get('device_path')
+            self.device_topic.append('read')
+            logger.info(f"Set device topic {'/'.join(self.device_topic)}")
 
         self.repeat_time = post_messages_configs.get('repeat_time')
         self.keepalive = post_messages_configs.get('keepalive')
@@ -139,8 +146,13 @@ class MessageWorker:
                 temp_values.pop('values', None)
                 temp_values.pop('value', None)
 
-            topic = "/".join(path)
+            device_path = []
+            device_path.extend(self.device_topic)
+            device_path.extend(path)
+
+            topic = "/".join(device_path)
             values = temp_values
+
             self.message_list.append(
                 Message(topic, values, calculate_worker=self.calculated_worker))
         logger.info(

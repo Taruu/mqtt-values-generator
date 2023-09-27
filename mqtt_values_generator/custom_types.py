@@ -185,7 +185,7 @@ class Message:
     def get(self):
 
         return {'topic': self.topic,
-                'payload': json.dumps({'read': self.value}, cls=ToJsonEncoder),
+                'payload': json.dumps(self.value, cls=ToJsonEncoder),
                 'qos': 1, 'retain': False,
                 'properties': {
                     "User Property": {'message_id': uuid.uuid1().__str__()}}}

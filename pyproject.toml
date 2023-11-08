@@ -1,6 +1,7 @@
 [tool.poetry]
 name = "mqtt-values-generator"
 version = "0.1.2"
+license = "MIT"
 description = ""
 authors = ["Taruu <taruumax@gmail.com>"]
 readme = "README.md"
